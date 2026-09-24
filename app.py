@@ -8,12 +8,10 @@ import random
 # --- CONFIGURATION ---
 GROQ_API_KEY = "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"
 
+# Updated active Groq models (decommissioned models removed)
 PREFERRED_MODELS = [
     "llama-3.3-70b-versatile",
-    "llama-3.1-8b-instant",
-    "llama3-8b-8192",
-    "mixtral-8x7b-32768",
-    "gemma2-9b-it"
+    "llama-3.1-8b-instant"
 ]
 
 client = openai.OpenAI(

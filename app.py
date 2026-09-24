@@ -8,10 +8,10 @@ import random
 # --- CONFIGURATION ---
 GROQ_API_KEY = "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"
 
-# Updated active Groq models (decommissioned models removed)
+# Active Groq Production Models with JSON support
 PREFERRED_MODELS = [
     "llama-3.3-70b-versatile",
-    "llama-3.1-8b-instant"
+    "openai/gpt-oss-20b"
 ]
 
 client = openai.OpenAI(
@@ -34,7 +34,7 @@ if "user_answers" not in st.session_state:
 
 # --- HELPER FUNCTIONS ---
 def generate_cards_fast(prompt: str):
-    last_err = ""
+    err_logs = []
     for model_id in PREFERRED_MODELS:
         try:
             response = client.chat.completions.create(
@@ -45,9 +45,9 @@ def generate_cards_fast(prompt: str):
             )
             return response, None
         except Exception as e:
-            last_err = str(e)
+            err_logs.append(f"[{model_id}]: {str(e)}")
             continue
-    return None, last_err
+    return None, " \n ".join(err_logs)
 
 # --- HEADER ---
 st.title("🎯 Gizmo AI Study & Trivia")
@@ -104,7 +104,7 @@ with tab_gen:
                 response, err = generate_cards_fast(prompt)
 
                 if not response:
-                    st.error(f"❌ Failed to generate cards: {err}")
+                    st.error(f"❌ Failed to generate cards:\n{err}")
                 else:
                     try:
                         data = json.loads(response.choices[0].message.content)
